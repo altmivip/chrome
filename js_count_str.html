@@ -1,0 +1,111 @@
+<!DOCTYPE HTML> 
+<html> 
+<head> 
+<meta http-equiv="Content-Type" content="text/html; charset=gbk"> 
+<style type="text/css"> 
+span,em { color:#933; padding:0 5px;} 
+.text { width:500px;} 
+</style> 
+<title>找出字符串中出现次数最多的字符</title> 
+</head> 
+ 
+<body> 
+<h2>输出一串字符，可以查找出字符串中出现次数最多的字符！</h2> 
+<textarea name="text" id="text" class="text" rows="15" cols="20" value=""></textarea>
+<input type="button" value="查找" /> 
+<p>出现最多的是：“<span>查找中...</span>”，共出现了<em>计算中...</em>次。</p> 
+<input type="text" id="txt" />
+<select id="page"></select>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js" type="text/javascript"></script> 
+<script type="text/javascript"> 
+$(function(){ 
+    $("input:button").click(function(){ 
+        count();     
+    }); 
+}); 
+function count(){ 
+    timedCount();
+    var str = $("#text").val();//获取输入框中的值 
+    var maxlength = 0;//定义最大次数 
+    //循环：每次都获取字符串第一个字符，并将其替换为空，获取其个数。直到字符串为空 
+    //alert(str);
+    var count = 0;
+    while(str != ""){ 
+        var oldstr = str;//给字符串定义新变量 
+        //letter = '孕前'; 
+        letter = str.substr(0,1);//使用substr方法获得字符串第一个字符 
+        var str = str.replace(new RegExp(letter,"g"),"");//使用正则表达式将字符串中“跟第一个字符相同的字符”替换为空 
+        //“oldstr.length - str.length”是当前字符的个数，判断其是否大于前一个字符的个数 
+        if(oldstr.length - str.length > maxlength){ 
+            maxlength = oldstr.length - str.length;//将当前字符个数赋给变量maxlength 
+            $("span").text(letter); 
+            $("em").text(maxlength); 
+        }; 
+        count += 1;
+        $("#txt").val(count);
+    }; 
+    stopCount();
+}; 
+var c = 0
+var t
+function timedCount() {
+    document.getElementById('txt').value = c
+        c = c + 1
+        t = setTimeout("timedCount()", 1000)
+}
+function stopCount() { 
+    clearTimeout(t)
+}
+
+$(function(){
+    console.time('good');
+    var $page = $('#page'),option;
+    for(var i=1;i<1000;i++){
+        option+="<option value="+i+">第 "+i+" 页</option>";
+    }
+    //dom 操作一次
+    $page.append(option);
+    console.timeEnd('good');
+    
+    console.time('bad');
+    var $page = $('#page')
+    for(var i=1;i<1000;i++){
+        //dom 操作999次
+        $page.append("<option value="+i+">第 "+i+" 页</option>");
+    }
+    console.timeEnd('bad');
+                
+    console.time('very bad');
+    for(var i=1;i<1000;i++){
+        //选择999次、dom 操作999次
+        $('#page').append("<option value="+i+">第 "+i+" 页</option>");
+    }
+    console.timeEnd('very bad');
+});
+if(window.console && typeof(window.console.time) == "undefined") {
+    console.time = function(name, reset){
+        if(!name) { return; }
+        var time = new Date().getTime();
+        if(!console.timeCounters) { console.timeCounters = {} };
+        var key = "KEY" + name.toString();
+        if(!reset && console.timeCounters[key]) { return; }
+            console.timeCounters[key] = time;
+        };
+    console.timeEnd = function(name){
+        var time = new Date().getTime();
+        if(!console.timeCounters) { return; }
+        var key = "KEY" + name.toString();
+        var timeCounter = console.timeCounters[key];
+        if(timeCounter) {
+            var diff = time - timeCounter;
+            var label = name + ": " + diff + "ms";
+            console.info(label);
+            delete console.timeCounters[key];
+        }
+        return diff;
+    };
+}
+
+</script> 
+</body> 
+</html> 
